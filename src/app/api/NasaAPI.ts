@@ -15,22 +15,22 @@ const NasaURL = axios.create({
 })
 
 export const APODFetch = () => {
-    NasaURL.get(`/planetary/apod?api_key=${API_KEY}`)
+   return NasaURL.get(`/planetary/apod?api_key=${API_KEY}`)
 }
 
 export const AsteroidFetch = () => {
-    NasaURL.get(`/neo/rest/v1/feed?start_date=${startDate}&api_key=${API_KEY}`)
+    return NasaURL.get(`/neo/rest/v1/feed?start_date=${startDate}&api_key=${API_KEY}`)
 }
 
 export const EPICFetch = () => {
-    NasaURL.get(`/EPIC/api/natural?api_key=${API_KEY}`)
+    return NasaURL.get(`/EPIC/api/natural?api_key=${API_KEY}`)
 }
 
 export const MarsRoverPhotosFetch = () => {
-    NasaURL.get(`/mars-photos/api/v1/rovers/curiosity/photos?sol=${solMars}&api_key=${API_KEY}`)
+    return NasaURL.get(`/mars-photos/api/v1/rovers/curiosity/photos?sol=${solMars}&api_key=${API_KEY}`)
 }
 
 export const NasaImageFetch = () => {
     // Esta ruta es pública
-    axios.get(`https://images-api.nasa.gov/search?q=${ImageNasaQuery}`)
+    return axios.get(`https://images-api.nasa.gov/search?q=${ImageNasaQuery}`)
 }
