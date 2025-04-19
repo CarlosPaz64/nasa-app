@@ -9,7 +9,9 @@ export class APODContractImplementation implements APODContract {
 
     // Se llama a la función que obtiene los datos y luego se aplica el correspondiente map
     async getAPODData(): Promise<APODEntity> {
+        // Se espera a la respuesta de la API
         const response = await APODFetch();
+        // Después se le incrusta esa respuesta al mapeo
         return APODMap(response.data)
         // Se retorna la respuesta
     }
