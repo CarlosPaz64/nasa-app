@@ -2,5 +2,5 @@
 import { EPICEntity } from "../entities/EPICEntity";
 
 export interface EPICContract {
-    getEPICData(): Promise<EPICEntity>
+    getEPICData(): Promise<EPICEntity[]>
 }

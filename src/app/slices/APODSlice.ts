@@ -22,3 +22,56 @@ const initialState: APODState = {
     error: null // El error inexistente
 }
 
+
+// Creación del thunk para el modo online y demás
+export const GetTheAPOD = createAsyncThunk<
+  NasaEntity<APODEntity>, // tipo de retorno
+  void,                   // no recibe argumentos
+  { state: RootState }    // para leer state.apod
+>(
+  "apod/fetch",
+  async (_, thunkAPI) => {
+    const net = await NetInfo.fetch();
+    // Si no hay conexión:
+    if (!net.isConnected) {
+      const cached = thunkAPI.getState().APOD.data;
+      if (cached.length) {
+        // devolvemos los datos cacheados
+        return { id: "apod", data: cached };
+      }
+      // offline + sin cache → error
+      return thunkAPI.rejectWithValue("Offline y sin datos cacheados");
+    }
+    // Si hay conexión:
+    const repo = new APODContractImplementation();
+    const apod = await repo.getAPODData();
+    return { id: "apod", data: [apod] };
+  }
+);
+
+export const APODSlice = createSlice({
+    name: "apod",
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+      builder
+        // 4) Pendiente → marca loading
+        .addCase(GetTheAPOD.pending, (state) => {
+          state.loading = true;
+          state.error = null;
+        })
+        // 5) Cumplido → guarda data y quita loading
+        .addCase(GetTheAPOD.fulfilled, (state, action) => {
+          state.loading = false;
+          state.data = action.payload.data;
+        })
+        // 6) Rechazado → guarda error y quita loading
+        .addCase(GetTheAPOD.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload as string;
+        });
+    },
+})
+
+// Creamos una constante que 'llama' al reducer que acabamos de hacer
+export const APODReducer = APODSlice.reducer;
