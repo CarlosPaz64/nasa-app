@@ -7,6 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // Este es para web
 // Import del primer reducer
 import { APODReducer } from "../slices/APODSlice";
+import { EPICReducer } from "../slices/EPICSlice";
+import { ThemeReducer } from "../slices/ThemeSlice";
 import { Platform } from "react-native";
 
 // Esta validación es muy importante ya que define el storage a usar y no fuerza a Android a usar el de web ni viceversa
@@ -19,12 +21,14 @@ const persistConfig = {
     key: "root",
     // Aquí se define cuál usar; si AsyncStorage o el storageWeb
     storage,
-    whitelist: ["APOD"]
+    whitelist: ["APOD", "EPIC", "THEME"]
     // Luego siguen los reducers
 };
 
 const rootReducer = combineReducers({
-    APOD: APODReducer
+    APOD: APODReducer,
+    EPIC: EPICReducer,
+    theme: ThemeReducer
     // Reducers...
 })
 
