@@ -7,8 +7,8 @@ import Animated, {
   interpolateColor,
 } from "react-native-reanimated";
 import { useSelector }           from "react-redux";
-import { useEpicViewModel } from "../viewmodels/UseEPICViewModel";
-import type { RootState }        from "../../app/store/store";
+import { useEpicViewModel } from "../../viewmodels/UseEPICViewModel";
+import type { RootState } from "../../../app/store/store";
 
 export default function EpicScreen() {
   // Lógica de datos
@@ -84,7 +84,7 @@ export default function EpicScreen() {
         }}
       />
       <View style={styles.button}>
-        <Button title="Recargar EPIC" onPress={reload} />
+        <Button title="Reload EPIC" onPress={reload} color={mode === "light" ? undefined : "gray"} />
       </View>
     </Animated.View>
   );
