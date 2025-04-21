@@ -2,12 +2,21 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerNavigator from "./DrawerNavigation";
 import HDPhotoModal from "../../presentation/views/principal/HDPhotoModal";
+import IntroScreen from "../../presentation/views/principal/HomeScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function RootStackNavigation() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+    initialRouteName="Intro"
+    >
+      {/* Ruta de inicio, que sirve para explicar al usuario qué hace y cómo funciona la aplicación */}
+      <Stack.Screen
+        name="Intro"
+        component={IntroScreen}
+        options={{ headerShown: false }}
+      />
       {/* Aquí renderizas tu DrawerNavigator, sin header */}
       <Stack.Screen
         name="Main"
