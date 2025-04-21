@@ -26,7 +26,7 @@ export const EPICFetch = () => {
     return NasaURL.get(`/EPIC/api/natural?api_key=${API_KEY}`)
 }
 
-export const MarsRoverPhotosFetch = () => {
+export const MarsRoverPhotosFetch = (page: number) => {
     return NasaURL.get(`/mars-photos/api/v1/rovers/curiosity/photos?sol=${solMars}&api_key=${API_KEY}`)
 }
 

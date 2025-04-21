@@ -2,5 +2,5 @@
 import { MarsRoverPhotosEntity } from "../entities/MarsRoverPhotosEntity";
 
 export interface MarsRoverPhotosContract {
-    getMarsPhotosData(): Promise<MarsRoverPhotosEntity>
+    getMarsPhotosData(page: number): Promise<MarsRoverPhotosEntity[]>
 }

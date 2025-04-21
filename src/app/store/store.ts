@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { APODReducer } from "../slices/APODSlice";
 import { EPICReducer } from "../slices/EPICSlice";
 import { ThemeReducer } from "../slices/ThemeSlice";
+import { MarsRoverReducer } from "../slices/MarsRoverPhotosSlice";
 import { Platform } from "react-native";
 
 // Esta validación es muy importante ya que define el storage a usar y no fuerza a Android a usar el de web ni viceversa
@@ -28,7 +29,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
     APOD: APODReducer,
     EPIC: EPICReducer,
-    theme: ThemeReducer
+    theme: ThemeReducer,
+    MarsRoverPhotos: MarsRoverReducer
     // Reducers...
 })
 

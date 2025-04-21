@@ -5,7 +5,7 @@ import { MarsRoverPhotosEntity } from "../entities/MarsRoverPhotosEntity";
 export class MarsRoverPhotosUseCase {
     constructor(private repository: MarsRoverPhotosContract){}
 
-    async execute(): Promise<MarsRoverPhotosEntity> {
-        return this.repository.getMarsPhotosData();
+    async execute(page: number): Promise<MarsRoverPhotosEntity[]> {
+        return this.repository.getMarsPhotosData(page);
     }
 }

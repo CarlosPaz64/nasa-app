@@ -19,7 +19,7 @@ export default function RootStackNavigation() {
       />
       {/* Aquí renderizas tu DrawerNavigator, sin header */}
       <Stack.Screen
-        name="Main"
+        name="Home"
         component={DrawerNavigator}
         options={{ headerShown: false }}
       />
