@@ -7,26 +7,30 @@ import {
   ActivityIndicator,
   Text,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import { useMarsRoverViewModel } from "../../viewmodels/UseMarsRoverPhotosViewModel";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../app/store/store";
 
+const { width } = Dimensions.get("window");
+// Definimos cuántas columnas queremos:
+const NUM_COLUMNS = 2;
+// Margen exterior entre “cards”:
+const MARGIN = 8;
+// Calculamos el tamaño de cada card restando los márgenes totales:
+const CARD_SIZE = (width - MARGIN * (NUM_COLUMNS + 1)) / NUM_COLUMNS;
+
 export default function MarsGalleryScreen() {
-  // 1) Datos y estado de la galería
   const { data, loading, error, hasMore, loadMore } =
     useMarsRoverViewModel();
-
-  // 2) Modo de tema global
   const mode = useSelector((s: RootState) => s.theme.mode);
 
-  // 3) Colores dinámicos (idénticos a ApodScreen)
   const colors = {
     background: mode === "light" ? "#FFFFFF" : "#222222",
     text:       mode === "light" ? "#000000" : "#FFFFFF",
   };
 
-  // 4) UI de carga
   if (loading && data.length === 0) {
     return (
       <View style={[styles.center, { backgroundColor: colors.background }]}>
@@ -35,7 +39,6 @@ export default function MarsGalleryScreen() {
     );
   }
 
-  // 5) UI de error
   if (error && data.length === 0) {
     return (
       <View style={[styles.center, { backgroundColor: colors.background }]}>
@@ -46,21 +49,22 @@ export default function MarsGalleryScreen() {
     );
   }
 
-  // 6) Lista principal
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
         data={data}
         keyExtractor={(item) => item.id.toString()}
-        numColumns={2}
+        numColumns={NUM_COLUMNS}
+        // Retiramos alignItems: "center"
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
-          <Image
-            source={{ uri: item.img_src }}
-            style={styles.image}
-          />
+          <View style={styles.card}>
+            <Image
+              source={{ uri: item.img_src }}
+              style={styles.image}
+            />
+          </View>
         )}
-        // Infinite scroll
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
@@ -83,17 +87,24 @@ const styles = StyleSheet.create({
     alignItems:     "center",
   },
   errorText: {
-    fontSize:   16,
+    fontSize: 16,
   },
   listContent: {
-    padding:       8,
-    alignItems:    "center",
-    justifyContent:"center",
+    // Padding alrededor y de cada card
+    padding: MARGIN,
+  },
+  card: {
+    width:        CARD_SIZE,
+    height:       CARD_SIZE,
+    marginBottom: MARGIN,
+    marginRight:  MARGIN,
+    // Para que la última card de cada fila no tenga margen derecho
+    // RN maneja bien el wrap sin necesidad de chequear índice
   },
   image: {
-    width:    "48%",
-    height:   150,
-    margin:   "1%",
+    width:       "100%",
+    height:      undefined,
+    aspectRatio: 1,       // siempre cuadrada
     borderRadius: 8,
   },
   footer: {
