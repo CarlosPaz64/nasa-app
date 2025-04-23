@@ -1,72 +1,64 @@
-// src/app/slices/nasaMediaSlice.ts
+// app/slices/nasaImageSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import NetInfo from "@react-native-community/netinfo";
-import type { RootState } from "../store/store";
-import type { NasaMediaEntity } from "../../domain/entities/NasaImageEntity";
-import { NasaMediaImplementation } from "../../data/repositories/NasaImageRepoImpl";
+import type { RootState }       from "../store/store";
+import type { NasaImageEntity } from "../../domain/entities/NasaImageEntity";
+import { NasaImageRepoImpl }    from "../../data/repositories/NasaImageRepoImpl";
 
-interface NasaMediaState {
-  id: string;
-  data: NasaMediaEntity[];
+interface State {
+  id:      string;
+  data:    NasaImageEntity[];
   loading: boolean;
-  error: string | null;
+  error:   string | null;
 }
 
-const initialState: NasaMediaState = {
-  id: "",
-  data: [],
+const initialState: State = {
+  id:      "",
+  data:    [],
   loading: false,
-  error: null,
+  error:   null,
 };
 
-export const fetchNasaMedia = createAsyncThunk<
-  { id: string; data: NasaMediaEntity[] },
-  { query: string; includeVideos: boolean },
+export const fetchNasaImages = createAsyncThunk<
+  { id: string; data: NasaImageEntity[] },
+  { query: string },
   { state: RootState; rejectValue: string }
 >(
-  "nasaMedia/fetch",
-  async ({ query, includeVideos }, thunkAPI) => {
+  "nasaImages/fetch",
+  async ({ query }, thunkAPI) => {
     const net = await NetInfo.fetch();
     if (!net.isConnected) {
-      const cached = thunkAPI.getState().NasaMedia.data;
-      if (cached.length) {
-        return { id: query, data: cached };
-      }
-      return thunkAPI.rejectWithValue("Offline y sin datos");
+      const cached = thunkAPI.getState().NasaImages.data;
+      if (cached.length) return { id: query, data: cached };
+      return thunkAPI.rejectWithValue("Offline y sin datos cacheados");
     }
-
-    const repo = new NasaMediaImplementation();
-    const medias = await repo.getNasaMediaData(query, includeVideos);
-    if (!medias.length) {
-      return thunkAPI.rejectWithValue(
-        `No se encontraron ${
-          includeVideos ? "imágenes o videos" : "imágenes"
-        } para "${query}"`
-      );
-    }
-    return { id: query, data: medias };
+    const repo = new NasaImageRepoImpl();
+    const images = await repo.getNasaImagesData(query);
+    if (!images.length)
+      return thunkAPI.rejectWithValue(`No se encontraron imágenes para "${query}"`);
+    return { id: query, data: images };
   }
 );
 
-const nasaMediaSlice = createSlice({
-  name: "nasaMedia",
+const slice = createSlice({
+  name: "nasaImages",
   initialState,
   reducers: {},
-  extraReducers: (b) =>
-    b
-      .addCase(fetchNasaMedia.pending, (s) => {
-        s.loading = true;
-        s.error = null;
+  extraReducers: builder =>
+    builder
+      .addCase(fetchNasaImages.pending, state => {
+        state.loading = true;
+        state.error   = null;
       })
-      .addCase(fetchNasaMedia.fulfilled, (s, a) => {
-        s.loading = false;
-        s.id = a.payload.id;
-        s.data = a.payload.data;
+      .addCase(fetchNasaImages.fulfilled, (state, action) => {
+        state.loading = false;
+        state.id      = action.payload.id;
+        state.data    = action.payload.data;
       })
-      .addCase(fetchNasaMedia.rejected, (s, a) => {
-        s.loading = false;
-        s.error = a.payload ?? "Error genérico";
+      .addCase(fetchNasaImages.rejected, (state, action) => {
+        state.loading = false;
+        state.error   = action.payload ?? "Error al cargar imágenes";
       }),
 });
 
-export const NasaMediaReducer = nasaMediaSlice.reducer;
+export const NasaImageReducer = slice.reducer;

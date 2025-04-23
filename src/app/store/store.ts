@@ -10,7 +10,7 @@ import { APODReducer } from "../slices/APODSlice";
 import { EPICReducer } from "../slices/EPICSlice";
 import { ThemeReducer } from "../slices/ThemeSlice";
 import { MarsRoverReducer } from "../slices/MarsRoverPhotosSlice";
-import { NasaMediaReducer } from "../slices/NasaImageSlice";
+import { NasaImageReducer } from "../slices/NasaImageSlice";
 import { Platform } from "react-native";
 
 // Esta validación es muy importante ya que define el storage a usar y no fuerza a Android a usar el de web ni viceversa
@@ -32,7 +32,7 @@ const rootReducer = combineReducers({
     EPIC: EPICReducer,
     theme: ThemeReducer,
     MarsRoverPhotos: MarsRoverReducer,
-    NasaMedia: NasaMediaReducer
+    NasaImages: NasaImageReducer
     // Reducers...
 })
 

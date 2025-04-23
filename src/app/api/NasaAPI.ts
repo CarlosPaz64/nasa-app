@@ -30,15 +30,7 @@ export const MarsRoverPhotosFetch = (page: number) => {
 }
 
 // Se va a hacer el cambio del parámetro 'galaxy' para que pueda aceptar cualquier valor
-export const NasaImageFetch = (imageNasaQuery: string, videos = false) => {
-    const query = encodeURIComponent(imageNasaQuery.trim()) // Esto es para eliminar campos vacíos de una oración
-    // Parámetro para mostrar vídeos e imágenes
-    const media = videos ? "image,video" : "image";
-    // Esta ruta es pública
-    return axios.get(`https://images-api.nasa.gov/search?q=${query}&media_type=${media}`)
-}
-
-// Esta es una función para descargar el JSON de las imágenes de la NASA
-export const NasaMediaAssetsFetch = (href: string) => {
-    return axios.get<string[]>(href);
+export const NasaImageFetch = (query: string) => {
+    const q = encodeURIComponent(query.trim());
+    return axios.get(`https://images-api.nasa.gov/search?q=${q}&media_type=image`);
   };
