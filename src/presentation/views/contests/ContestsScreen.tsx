@@ -30,6 +30,7 @@ const concursos: {
   { id: "visitNASA", label: "Visit NASA",  icon: "planet-outline" },
   { id: "moonRocks", label: "Moon rocks", icon: "moon-outline"  },
   { id: "spaceTour", label: "Space travel",  icon: "rocket-outline" },
+  { id: "telescope", label: "Get a telescope",  icon: "telescope-outline" },
 ];
 
 // Parámetros de navegación

@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerNavigator from "./DrawerNavigation";
 import HDPhotoModal from "../../presentation/views/principal/HDPhotoModal";
 import IntroScreen from "../../presentation/views/principal/HomeScreen";
+import MediaModal from "../../presentation/views/principal/MediaModal";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,15 @@ export default function RootStackNavigation() {
       <Stack.Screen
         name="HDPhotoModal"
         component={HDPhotoModal}
+        options={{
+          presentation: "modal",
+          headerShown: false,  // o true si quieres un header con un “Cerrar”
+        }}
+      />
+      {/* Modal del archivo multimedia seleccionado */}
+      <Stack.Screen
+        name="MediaModal"
+        component={MediaModal}
         options={{
           presentation: "modal",
           headerShown: false,  // o true si quieres un header con un “Cerrar”

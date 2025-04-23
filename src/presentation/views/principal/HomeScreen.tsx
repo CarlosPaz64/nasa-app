@@ -78,9 +78,10 @@ export default function IntroScreen() {
         <Text style={styles.bold}>NASA Contests</Text>:
       </Text>
       <Text style={styles.paragraph}>
-        ‣ Visit NASA facilities{"\n"}
-        ‣ Win genuine moon rocks{"\n"}
-        ‣ Take a trip to space!
+        ‣ Visit NASA facilities!{"\n"}
+        ‣ Win beautiful moon rocks!{"\n"}
+        ‣ Take a trip to space!{"\n"}
+        ‣ Get a telescope for free!
       </Text>
 
       {/* Begin Button */}

@@ -4,6 +4,7 @@ import { AsteroidEntity } from "../../domain/entities/AsteroidEntity";
 import { EPICEntity } from "../../domain/entities/EPICEntity";
 import { MarsRoverPhotosEntity } from "../../domain/entities/MarsRoverPhotosEntity";
 import { NasaImageEntity } from "../../domain/entities/NasaImageEntity";
+import { NasaMediaEntity } from "../../domain/entities/NasaImageEntity";
 
 // Mapping de los datos del APOD a la entidad correspondiente
 export const APODMap = (raw: any): APODEntity => ({
@@ -85,12 +86,22 @@ export const MarsRoverMap = (raw: any): MarsRoverPhotosEntity[] => {
 }
 
 // Mapping de los datos de la API de las imágenes de la NASA a la entidad correspondiente
-export const NasaImageMap = (raw: any): NasaImageEntity[] => {
-    // La API devuelve raw.collection.items, cada item tiene data[0] (metadatos) y links[].
-    return raw.collection.items.map((item: any) => ({
-        // Usamos spread para tomar todos los campos de item.data[0]
-        ...item.data[0],
-        // links es un array de objetos con href, rel, render, width, height, size
-        links: item.links
-    }))
-}
+export const NasaImageMap = (raw: any): NasaMediaEntity[] => {
+    return raw.collection.items.map((item: any) => {
+      const data  = item.data[0] as NasaImageEntity;
+      const links = item.links as NasaImageEntity["links"];
+      // Busca el thumbnail “preview”, o toma el primero
+      const preview =
+        links.find(l => l.rel === "preview" && l.render === "image")?.href
+        ?? links[0]?.href
+        ?? "";
+  
+      return {
+        ...data,
+        links,
+        preview,
+        assetsHref: item.href,    // JSON para vídeo
+        // video_links se llenará luego en el repo
+      };
+    });
+  }

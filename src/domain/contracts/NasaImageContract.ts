@@ -2,5 +2,5 @@
 import { NasaImageEntity } from "../entities/NasaImageEntity";
 
 export interface NasaImageContract {
-    getNasaImagesData(): Promise<NasaImageEntity>
+    getNasaImagesData(imageNasaQuery: string, videos: boolean): Promise<NasaImageEntity[]>
 }

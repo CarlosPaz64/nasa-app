@@ -10,6 +10,7 @@ import { APODReducer } from "../slices/APODSlice";
 import { EPICReducer } from "../slices/EPICSlice";
 import { ThemeReducer } from "../slices/ThemeSlice";
 import { MarsRoverReducer } from "../slices/MarsRoverPhotosSlice";
+import { NasaMediaReducer } from "../slices/NasaImageSlice";
 import { Platform } from "react-native";
 
 // Esta validación es muy importante ya que define el storage a usar y no fuerza a Android a usar el de web ni viceversa
@@ -22,7 +23,7 @@ const persistConfig = {
     key: "root",
     // Aquí se define cuál usar; si AsyncStorage o el storageWeb
     storage,
-    whitelist: ["APOD", "EPIC", "THEME", "MARS"]
+    whitelist: ["APOD", "EPIC", "THEME", "MARS", "NASA_IMAGES"]
     // Luego siguen los reducers
 };
 
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
     APOD: APODReducer,
     EPIC: EPICReducer,
     theme: ThemeReducer,
-    MarsRoverPhotos: MarsRoverReducer
+    MarsRoverPhotos: MarsRoverReducer,
+    NasaMedia: NasaMediaReducer
     // Reducers...
 })
 

@@ -11,7 +11,7 @@ export interface NasaImageEntity {
     description: string;
     description_508?: string;
     keywords: string[];
-    media_type: string;
+    media_type: 'image' | 'video';
     nasa_id: string;
     secondary_creator?: string; // Puede haber como no
     title: string;
@@ -26,4 +26,15 @@ export interface NasaImageEntity {
         size?: number;
         // Son valores que puede tener o no
     }[];
+    asset_href: string;
 }
+
+// Esta es una interfaz ampliada de la entidad inicial
+export interface NasaMediaEntity extends NasaImageEntity {
+    /** URL de vista previa (thumbnail) */
+    preview: string;
+    /** El href al JSON de assets (para vídeo) */
+    assetsHref: string;
+    /** Lista de URLs .mp4 (solo si fue petición de vídeos) */
+    video_links?: string[];
+  }
