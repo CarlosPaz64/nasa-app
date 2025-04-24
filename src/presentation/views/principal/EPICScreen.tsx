@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator, Button } from "react-native";
+import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator, Button, TouchableOpacity } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,8 +9,13 @@ import Animated, {
 import { useSelector }           from "react-redux";
 import { useEpicViewModel } from "../../viewmodels/UseEPICViewModel";
 import type { RootState } from "../../../app/store/store";
+// Para la navegación
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 export default function EpicScreen() {
+  // constante de la navegación
+const navigation = useNavigation<NativeStackNavigationProp<any>>();
   // Lógica de datos
   const { epics, loading, error, reload } = useEpicViewModel();
   // Tema global
@@ -61,6 +66,7 @@ export default function EpicScreen() {
           const uri = `https://epic.gsfc.nasa.gov/archive/natural/${dateOnly}/png/${item.image}.png`;
 
           return (
+            <TouchableOpacity onPress={() => navigation.navigate("EpicDetailModal", { epic: item })}>
             <View style={[styles.card, { backgroundColor: mode === "light" ? "#eee" : "#333" }]}>
               <Text style={[styles.title, { color: mode === "light" ? "#000" : "#fff" }]}>
                 {item.date}
@@ -80,6 +86,7 @@ export default function EpicScreen() {
                 </Text>
               </View>
             </View>
+            </TouchableOpacity>
           );
         }}
       />

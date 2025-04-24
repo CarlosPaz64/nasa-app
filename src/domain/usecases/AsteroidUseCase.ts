@@ -7,7 +7,7 @@ export class AsteroidUseCase {
     // Del objeto repository que hará que el contrato se cumpla
     constructor(private repository: AsteroidContract){}
 
-    async execute(): Promise<AsteroidEntity> {
+    async execute(): Promise<AsteroidEntity[]> {
         return this.repository.getAsteroidsData();
     }
 }

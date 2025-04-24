@@ -8,10 +8,14 @@ import {
   Text,
   StyleSheet,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import { useMarsRoverViewModel } from "../../viewmodels/UseMarsRoverPhotosViewModel";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../../app/store/store";
+// Para la navegación
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 const { width } = Dimensions.get("window");
 // Definimos cuántas columnas queremos:
@@ -22,6 +26,8 @@ const MARGIN = 8;
 const CARD_SIZE = (width - MARGIN * (NUM_COLUMNS + 1)) / NUM_COLUMNS;
 
 export default function MarsGalleryScreen() {
+    // constante de la navegación
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { data, loading, error, hasMore, loadMore } =
     useMarsRoverViewModel();
   const mode = useSelector((s: RootState) => s.theme.mode);
@@ -58,12 +64,15 @@ export default function MarsGalleryScreen() {
         // Retiramos alignItems: "center"
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
+          <TouchableOpacity
+          onPress={() => navigation.navigate("MarsHDPhoto", { mars: item }) }>
           <View style={styles.card}>
             <Image
               source={{ uri: item.img_src }}
               style={styles.image}
             />
           </View>
+          </TouchableOpacity>
         )}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}

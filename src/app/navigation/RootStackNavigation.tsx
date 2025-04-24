@@ -4,6 +4,8 @@ import DrawerNavigator from "./DrawerNavigation";
 import HDPhotoModal from "../../presentation/views/principal/HDPhotoModal";
 import IntroScreen from "../../presentation/views/principal/HomeScreen";
 import MediaModal from "../../presentation/views/principal/MediaModal";
+import EpicDetailModal from "../../presentation/views/principal/EpicDetail";
+import MarsHDPhoto from "../../presentation/views/principal/MarsHDPhoto";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +39,26 @@ export default function RootStackNavigation() {
       <Stack.Screen
         name="MediaModal"
         component={MediaModal}
+        options={{
+          presentation: "modal",
+          headerShown: false,  // o true si quieres un header con un “Cerrar”
+        }}
+      />
+
+      {/* Modal de detalles del EPIC */}
+      <Stack.Screen
+        name="EpicDetailModal"
+        component={EpicDetailModal}
+        options={{
+          presentation: "modal",
+          headerShown: false,  // o true si quieres un header con un “Cerrar”
+        }}
+      />
+
+      {/* Modal de detalles de Marte */}
+      <Stack.Screen
+        name="MarsHDPhoto"
+        component={MarsHDPhoto}
         options={{
           presentation: "modal",
           headerShown: false,  // o true si quieres un header con un “Cerrar”
