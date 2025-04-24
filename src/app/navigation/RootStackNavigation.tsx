@@ -1,11 +1,11 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DrawerNavigator from "./DrawerNavigation";
-import HDPhotoModal from "../../presentation/views/principal/HDPhotoModal";
+import HDPhotoModal from "../../presentation/views/modals/HDPhotoModal";
 import IntroScreen from "../../presentation/views/principal/HomeScreen";
-import MediaModal from "../../presentation/views/principal/MediaModal";
-import EpicDetailModal from "../../presentation/views/principal/EpicDetail";
-import MarsHDPhoto from "../../presentation/views/principal/MarsHDPhoto";
+import MediaModal from "../../presentation/views/modals/MediaModal";
+import EpicDetailModal from "../../presentation/views/modals/EpicDetail";
+import MarsHDPhoto from "../../presentation/views/modals/MarsHDPhoto";
 
 const Stack = createNativeStackNavigator();
 
