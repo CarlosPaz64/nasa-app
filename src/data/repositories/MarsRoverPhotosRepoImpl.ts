@@ -6,8 +6,8 @@ import { MarsRoverPhotosFetch } from "../../app/api/NasaAPI";
 
 export class MarsRoverPhotosImplementation implements MarsRoverPhotosContract {
     async getMarsPhotosData(page: number): Promise<MarsRoverPhotosEntity[]> {
-        const response = await MarsRoverPhotosFetch(page);
+        const { data: raw } = await MarsRoverPhotosFetch(page);
 
-        return MarsRoverMap(response.data)
+        return MarsRoverMap(raw)
     }
 }

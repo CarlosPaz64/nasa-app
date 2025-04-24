@@ -26,8 +26,14 @@ export const EPICFetch = () => {
 }
 
 export const MarsRoverPhotosFetch = (page: number) => {
-    return NasaURL.get(`/mars-photos/api/v1/rovers/curiosity/photos?sol=${solMars}&api_key=${API_KEY}`)
-}
+    return NasaURL.get("/mars-photos/api/v1/rovers/curiosity/photos", {
+      params: {
+        sol: solMars,
+        page,
+        api_key: API_KEY,
+      },
+    });
+  };
 
 // Se va a hacer el cambio del parámetro 'galaxy' para que pueda aceptar cualquier valor
 export const NasaImageFetch = (query: string) => {

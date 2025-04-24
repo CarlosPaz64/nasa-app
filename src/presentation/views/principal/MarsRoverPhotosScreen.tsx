@@ -55,6 +55,7 @@ export default function MarsGalleryScreen() {
     );
   }
 
+  console.log(hasMore, loadMore)
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList

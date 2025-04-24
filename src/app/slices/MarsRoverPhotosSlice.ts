@@ -23,31 +23,28 @@ const initialState: MarsRoverState = {
 
 /**
  * Thunk para cargar fotos de Marte por página.  
- * Si estamos offline y ya hay cache, rechazamos para que muestre cache.
- * Si estamos online, llamamos al repositorio con la página actual.
+ * - Si estamos offline y ya hay cache, sale con reject para que muestre cache.
+ * - Si estamos online, llama a la API con el `page` actual.
  */
 export const fetchMarsRoverPhotos = createAsyncThunk<
-  MarsRoverPhotosEntity[],    // éxito devuelve array de entidades
-  void,                       // no recibe argumentos
+  MarsRoverPhotosEntity[],       // retorno en caso de éxito
+  void,                          // no recibe argumentos
   { state: RootState; rejectValue: string }
 >(
   "marsRover/fetch",
   async (_, thunkAPI) => {
     const net = await NetInfo.fetch();
-    // En tu store combinaste bajo la key "MarsRoverPhotos"
-    const slice = thunkAPI.getState().MarsRoverPhotos;
+    const slice = thunkAPI.getState().MarsRoverPhotos; // <— asegúrate que en combineReducers usas esta key
 
-    // Offline + tenemos cache → rechazamos con valor
     if (!net.isConnected) {
+      // Sin conexión pero tenemos datos cacheados
       if (slice.data.length > 0) {
-        return thunkAPI.rejectWithValue(
-          "Offline: mostrando fotos cacheadas"
-        );
+        return thunkAPI.rejectWithValue("Offline: mostrando fotos cacheadas");
       }
       return thunkAPI.rejectWithValue("Offline y sin cache");
     }
 
-    // Online → instanciamos el repo e invocamos getMarsPhotosData(page)
+    // Con conexión, pide la página `slice.page`
     const repo   = new MarsRoverPhotosImplementation();
     const photos = await repo.getMarsPhotosData(slice.page);
     return photos;
@@ -58,7 +55,7 @@ export const marsRoverSlice = createSlice({
   name: "MarsRoverPhotos",
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: (builder) =>
     builder
       .addCase(fetchMarsRoverPhotos.pending, (state) => {
         state.loading = true;
@@ -66,17 +63,16 @@ export const marsRoverSlice = createSlice({
       })
       .addCase(fetchMarsRoverPhotos.fulfilled, (state, action) => {
         state.loading = false;
-        // Añadimos al final las nuevas fotos
+        // Añade al final los nuevos elementos
         state.data    = [...state.data, ...action.payload];
         state.page   += 1;
-        // Si no vinieron más fotos, detenemos la paginación
+        // Si no vienen más, detenemos la paginación
         state.hasMore = action.payload.length > 0;
       })
       .addCase(fetchMarsRoverPhotos.rejected, (state, action) => {
         state.loading = false;
         state.error   = action.payload ?? "Error al cargar fotos de Marte";
-      });
-  },
+      }),
 });
 
 export const MarsRoverReducer = marsRoverSlice.reducer;

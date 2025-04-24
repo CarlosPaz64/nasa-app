@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMarsRoverPhotos } from "../../app/slices/MarsRoverPhotosSlice";
 import type { RootState, AppDispatch } from "../../app/store/store";
-import type { MarsRoverPhotosEntity } from "../../domain/entities/MarsRoverPhotosEntity";
 
 export function useMarsRoverViewModel() {
   const dispatch = useDispatch<AppDispatch>();
