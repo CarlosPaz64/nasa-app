@@ -77,7 +77,7 @@ export const MarsRoverMap = (raw: any): MarsRoverPhotosEntity[] => {
         // photo.earth_date: fecha en Tierra
         earth_date: photo.earth_date,
         // photo.img_src: URL de la imagen
-        img_src: photo.img_src,
+        img_src: (photo.img_src as string).replace(/^http:\/\//, "https://"),
         // photo.camera y photo.rover: objetos completos con metadatos
         camera: photo.camera,
         rover: photo.rover
