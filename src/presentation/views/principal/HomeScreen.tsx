@@ -104,6 +104,16 @@ export default function IntroScreen() {
         ‣ <Text style={styles.bold}>Library</Text> – NASA image & video library{'\n'}
         ‣ <Text style={styles.bold}>Asteroids</Text> – Near-Earth objects & hazards
       </Text>
+      <Text style={styles.paragraph}>
+        • Open the side menu to enter one of three{" "}
+        <Text style={styles.bold}>NASA Contests</Text>:
+      </Text>
+      <Text style={styles.paragraph}>
+        ‣ Visit<Text style={styles.bold}> NASA </Text>facilities!{"\n"}
+        ‣ Win beautiful <Text style={styles.bold}>MOON ROCKS!</Text>{"\n"}
+        ‣ Take a <Text style={styles.bold}>TRIP TO SPACE!</Text>{"\n"}
+        ‣ Get a <Text style={styles.bold}>TELESCOPE</Text> for <Text style={styles.bold}>FREE!</Text>
+      </Text>
 
       {/* Si hay error de precarga */}
       {error && (

@@ -6,6 +6,7 @@ import IntroScreen from "../../presentation/views/principal/HomeScreen";
 import MediaModal from "../../presentation/views/modals/MediaModal";
 import EpicDetailModal from "../../presentation/views/modals/EpicDetail";
 import MarsHDPhoto from "../../presentation/views/modals/MarsHDPhoto";
+import AsteroidDetailModal from "../../presentation/views/modals/AsteroidDetailModal";
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +60,16 @@ export default function RootStackNavigation() {
       <Stack.Screen
         name="MarsHDPhoto"
         component={MarsHDPhoto}
+        options={{
+          presentation: "modal",
+          headerShown: false,  // o true si quieres un header con un “Cerrar”
+        }}
+      />
+
+      {/* Modal de detalles de los asteroides */}
+      <Stack.Screen
+        name="AsteroidDetailModal"
+        component={AsteroidDetailModal}
         options={{
           presentation: "modal",
           headerShown: false,  // o true si quieres un header con un “Cerrar”
