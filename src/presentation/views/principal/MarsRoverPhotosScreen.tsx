@@ -30,7 +30,6 @@ export default function MarsGalleryScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { data, loading, error, hasMore, loadMore } =
     useMarsRoverViewModel();
-    console.log("🚀 fotos en state:", data); 
   const mode = useSelector((s: RootState) => s.theme.mode);
 
   const colors = {

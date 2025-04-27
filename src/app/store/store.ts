@@ -24,7 +24,7 @@ const persistConfig = {
     key: "root",
     // Aquí se define cuál usar; si AsyncStorage o el storageWeb
     storage,
-    whitelist: ["APOD", "EPIC", "THEME", "MARS", "NASA_IMAGES"]
+    whitelist: ["APOD", "EPIC", "theme", "MarsRoverPhotos", "NasaImages", "Asteroids"]
     // Luego siguen los reducers
 };
 
