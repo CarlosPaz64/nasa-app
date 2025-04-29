@@ -1,5 +1,4 @@
-// src/presentation/screens/MarsGalleryScreen.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   FlatList,
@@ -16,6 +15,13 @@ import type { RootState } from "../../../app/store/store";
 // Para la navegación
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  interpolateColor
+} from 'react-native-reanimated';
+
 
 const { width } = Dimensions.get("window");
 // Definimos cuántas columnas queremos:
@@ -31,6 +37,22 @@ export default function MarsGalleryScreen() {
   const { data, loading, error, hasMore, loadMore } =
     useMarsRoverViewModel();
   const mode = useSelector((s: RootState) => s.theme.mode);
+  const isLight = mode === "light";
+
+  // ② Configura la animación de fondo
+  const progress = useSharedValue(isLight ? 1 : 0);
+  useEffect(() => {
+    progress.value = withTiming(isLight ? 1 : 0, { duration: 500 });
+  }, [isLight]);
+  const bgStyle = useAnimatedStyle(() => ({
+    flex: 1,
+    backgroundColor: interpolateColor(
+      progress.value,
+      [0, 1],
+      ["#222222", "#FFFFFF"]
+    ),
+  }));
+
 
   const colors = {
     background: mode === "light" ? "#FFFFFF" : "#222222",
@@ -56,22 +78,22 @@ export default function MarsGalleryScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <Animated.View style={bgStyle}>
       <FlatList
         data={data}
         keyExtractor={(item) => item.id.toString()}
         numColumns={NUM_COLUMNS}
-        // Retiramos alignItems: "center"
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
           <TouchableOpacity
-          onPress={() => navigation.navigate("MarsHDPhoto", { mars: item }) }>
-          <View style={styles.card}>
-            <Image
-              source={{ uri: item.img_src }}
-              style={styles.image}
-            />
-          </View>
+            onPress={() =>
+              navigation.navigate("MarsHDPhoto", { mars: item })
+            }
+            activeOpacity={0.8}
+          >
+            <View style={styles.card}>
+              <Image source={{ uri: item.img_src }} style={styles.image} />
+            </View>
           </TouchableOpacity>
         )}
         onEndReached={loadMore}
@@ -82,7 +104,7 @@ export default function MarsGalleryScreen() {
           ) : null
         }
       />
-    </View>
+    </Animated.View>
   );
 }
 

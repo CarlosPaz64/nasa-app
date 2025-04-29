@@ -1,5 +1,5 @@
 // src/presentation/screens/ApodScreen.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,12 @@ import { UseApodViewModel } from "../../viewmodels/UseAPODViewModel";
 import type { RootState } from "../../../app/store/store";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  interpolateColor
+} from 'react-native-reanimated';
 
 // Definición de los parámetros para la vista modal con la fotografía en HD
 type RootStackParamList = {
@@ -46,10 +52,26 @@ export default function ApodScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { data, loading, error, refetch } = UseApodViewModel();
   const mode = useSelector((s: RootState) => s.theme.mode);
+  // Esta es una validación para conocer el color actual
+  const isLight = mode === "light";
+
+  const progress = useSharedValue(isLight ? 1 : 0);
+  useEffect(() => {
+    progress.value = withTiming(isLight ? 1 : 0, { duration: 500 });
+  }, [isLight]);
+
+  const bgStyle = useAnimatedStyle(() => ({
+    flex: 1,
+    backgroundColor: interpolateColor(
+      progress.value,
+      [0, 1],
+      ["#222222", "#FFFFFF"]
+    ),
+  }));
 
   const colors = {
-    background: mode === "light" ? "#FFFFFF" : "#222222",
-    text: mode === "light" ? "#000000" : "#FFFFFF",
+    background: isLight ? "#FFFFFF" : "#222222",
+    text: isLight ? "#000000" : "#FFFFFF",
   };
 
   if (loading) {
@@ -71,7 +93,7 @@ export default function ApodScreen() {
         </Text>
         <Button
           title="Reintentar"
-          color={mode === "light" ? undefined : "#FFFFFF"}
+          color={isLight ? undefined : "#FFFFFF"}
           onPress={refetch}
         />
       </View>
@@ -84,7 +106,7 @@ export default function ApodScreen() {
         <Text style={{ color: colors.text }}>No hay datos disponibles.</Text>
         <Button
           title="Cargar de nuevo"
-          color={mode === "light" ? undefined : "#FFFFFF"}
+          color={isLight ? undefined : "#FFFFFF"}
           onPress={refetch}
         />
       </View>
@@ -95,32 +117,34 @@ export default function ApodScreen() {
   const englishDate = formatDateEnglish(data.date);
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        { backgroundColor: colors.background },
-      ]}
-    >
-      <Text style={[styles.date, { color: colors.text }]}>
-        {englishDate}
-      </Text>
-      <Text style={[styles.title, { color: colors.text }]}>
-        {data.title}
-      </Text>
-      <Image source={{ uri: data.url }} style={styles.image} />
-      <Text style={[styles.explanation, { color: colors.text }]}>
-        {data.explanation}
-      </Text>
-      {data.hdurl && (
-        <Button
-          title="See photo in high definition"
-          color={mode === "light" ? undefined : "gray"}
-          onPress={() =>
-            navigation.navigate("HDPhotoModal", { uri: data.hdurl })
-          }
-        />
-      )}
-    </ScrollView>
+    <Animated.ScrollView style={bgStyle}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.container,
+          // quitamos aquí el backgroundColor fijo
+        ]}
+      >
+        <Text style={[styles.date, { color: colors.text }]}>
+          {englishDate}
+        </Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          {data.title}
+        </Text>
+        <Image source={{ uri: data.url }} style={styles.image} />
+        <Text style={[styles.explanation, { color: colors.text }]}>
+          {data.explanation}
+        </Text>
+        {data.hdurl && (
+          <Button
+            title="See photo in high definition"
+            color={isLight ? undefined : "gray"}
+            onPress={() =>
+              navigation.navigate("HDPhotoModal", { uri: data.hdurl })
+            }
+          />
+        )}
+      </ScrollView>
+    </Animated.ScrollView>
   );
 }
 
