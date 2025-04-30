@@ -1,4 +1,3 @@
-// src/navigation/BottomTabNavigator.tsx
 import React from "react";
 import { useSelector } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";

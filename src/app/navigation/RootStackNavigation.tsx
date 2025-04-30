@@ -34,6 +34,7 @@ export default function RootStackNavigation() {
         options={{
           presentation: "modal",
           headerShown: false,  // o true si quieres un header con un “Cerrar”
+          animation: 'slide_from_bottom'
         }}
       />
       {/* Modal del archivo multimedia seleccionado */}
@@ -43,6 +44,7 @@ export default function RootStackNavigation() {
         options={{
           presentation: "modal",
           headerShown: false,  // o true si quieres un header con un “Cerrar”
+          animation: 'fade_from_bottom'
         }}
       />
 
@@ -53,6 +55,7 @@ export default function RootStackNavigation() {
         options={{
           presentation: "modal",
           headerShown: false,  // o true si quieres un header con un “Cerrar”
+          animation: 'fade'
         }}
       />
 
@@ -63,6 +66,7 @@ export default function RootStackNavigation() {
         options={{
           presentation: "modal",
           headerShown: false,  // o true si quieres un header con un “Cerrar”
+          animation: 'slide_from_right'
         }}
       />
 
@@ -73,6 +77,7 @@ export default function RootStackNavigation() {
         options={{
           presentation: "modal",
           headerShown: false,  // o true si quieres un header con un “Cerrar”
+          animation: 'slide_from_left'
         }}
       />
     </Stack.Navigator>
