@@ -114,6 +114,9 @@ export default function IntroScreen() {
         ‣ Take a <Text style={styles.bold}>TRIP TO SPACE!</Text>{"\n"}
         ‣ Get a <Text style={styles.bold}>TELESCOPE</Text> for <Text style={styles.bold}>FREE!</Text>
       </Text>
+      <Text style={styles.heading}>
+        Remember to STAY ONLINE to use this explorer!
+      </Text>
 
       {/* Si hay error de precarga */}
       {error && (
