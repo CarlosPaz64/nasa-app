@@ -10,6 +10,17 @@ import MarsGalleryScreen from "../../presentation/views/principal/MarsRoverPhoto
 import NasaMediaScreen from "../../presentation/views/principal/NasaImagesScreen";
 import AsteroidListScreen from "../../presentation/views/principal/AsteroidScreen";
 
+import Animated, {  FadeIn,
+  FadeOut,
+  SlideInDown,
+  SlideOutUp,
+  ZoomIn,
+  ZoomOut,
+  BounceInRight,
+  BounceOutRight,
+  SlideInLeft,
+  SlideOutLeft, } from "react-native-reanimated";
+
 const Tab = createBottomTabNavigator();
 
 // Extraemos el tipo correcto para los nombres de ícono
@@ -65,11 +76,65 @@ export default function BottomTabNavigator() {
         };
       }}
     >
-      <Tab.Screen name="APOD" component={ApodScreen} />
-      <Tab.Screen name="EPIC" component={EpicScreen} />
-      <Tab.Screen name="Mars" component={MarsGalleryScreen} />
-      <Tab.Screen name="Nasa images" component={NasaMediaScreen} />
-      <Tab.Screen name="Asteroids" component={AsteroidListScreen} />
+      <Tab.Screen name="APOD" options={{ headerShown: false }}>
+        {() => (
+          <Animated.View
+            style={{ flex: 1 }}
+            entering={FadeIn.duration(500)}
+            exiting={FadeOut.duration(300)}
+          >
+            <ApodScreen />
+          </Animated.View>
+        )}
+      </Tab.Screen>
+
+      <Tab.Screen name="EPIC" options={{ headerShown: false }}>
+        {() => (
+          <Animated.View
+            style={{ flex: 1 }}
+            entering={SlideInDown.springify()}
+            exiting={SlideOutUp.springify()}
+          >
+            <EpicScreen />
+          </Animated.View>
+        )}
+      </Tab.Screen>
+
+      <Tab.Screen name="Mars">
+        {() => (
+          <Animated.View
+            style={{ flex: 1 }}
+            entering={ZoomIn.duration(400)}
+            exiting={ZoomOut.duration(300)}
+          >
+            <MarsGalleryScreen />
+          </Animated.View>
+        )}
+      </Tab.Screen>
+
+      <Tab.Screen name="Nasa images">
+        {() => (
+          <Animated.View
+            style={{ flex: 1 }}
+            entering={BounceInRight.duration(500)}
+            exiting={BounceOutRight.duration(400)}
+          >
+            <NasaMediaScreen />
+          </Animated.View>
+        )}
+      </Tab.Screen>
+
+      <Tab.Screen name="Asteroids">
+        {() => (
+          <Animated.View
+            style={{ flex: 1 }}
+            entering={SlideInLeft.duration(400)}
+            exiting={SlideOutLeft.duration(300)}
+          >
+            <AsteroidListScreen />
+          </Animated.View>
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }

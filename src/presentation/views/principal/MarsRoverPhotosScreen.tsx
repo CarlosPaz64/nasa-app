@@ -2,9 +2,10 @@
 import React, { useEffect, memo, useCallback } from "react";
 import {
   View,
+  Text,
+  FlatList,
   Image,
   ActivityIndicator,
-  Text,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
@@ -14,62 +15,56 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../../app/store/store";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   useAnimatedScrollHandler,
   withTiming,
   interpolateColor,
-  FadeIn,
-  Layout,
   interpolate,
 } from "react-native-reanimated";
 
-// Constantes de layout
-const { width } = Dimensions.get("window");
-const NUM_COLUMNS = 2;
-const MARGIN = 8;
-const CARD_SIZE = (width - MARGIN * (NUM_COLUMNS + 1)) / NUM_COLUMNS;
+// wrap FlatList into an animated component
+import type { FlatListProps } from "react-native";
+// Wrap FlatList with Animated, telling TS it's FlatListProps<Photo>
+const AnimatedFlatList = Animated.createAnimatedComponent<FlatListProps<Photo>>(FlatList);
 
-// Props del componente AnimatedCard
+const { width } = Dimensions.get("window");
+const MARGIN = 8;
+const NUM_COLUMNS = 2;
+
+type Photo = { id: number; img_src: string };
+
 interface AnimatedCardProps {
-  item: { id: number; img_src: string };
+  item: Photo;
   index: number;
   scrollY: Animated.SharedValue<number>;
 }
 
-// 🚀 Componente de tarjeta animada, memoizado para evitar re-renders innecesarios
 const AnimatedCard = memo(({ item, index, scrollY }: AnimatedCardProps) => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const cardSize = width / NUM_COLUMNS - MARGIN;
 
-  // ① Estilo parallax basado en scrollY
   const inputRange = [
-    (index - 2) * (CARD_SIZE + MARGIN),
-    index * (CARD_SIZE + MARGIN),
+    (index - 1) * (cardSize + MARGIN),
+    index * (cardSize + MARGIN),
   ];
-  const cardStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        translateY:
-          scrollY.value < 0
-            ? 0
-            : interpolate(scrollY.value, inputRange, [0, -20], "clamp"),
-      },
-    ],
-  }));
+  const animatedStyle = useAnimatedStyle(() => {
+    const t = scrollY.value < inputRange[0]
+      ? 0
+      : scrollY.value > inputRange[1]
+      ? -20
+      : interpolate(scrollY.value, inputRange, [0, -20], "clamp");
+    return { transform: [{ translateY: t }] };
+  });
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("MarsHDPhoto", { mars: item })}
       activeOpacity={0.8}
-      style={{ margin: MARGIN / 2 }}
+      onPress={() => navigation.navigate("MarsHDPhoto", { mars: item })}
+      style={[styles.cardWrapper, { width: cardSize, height: cardSize }]}
     >
-      <Animated.View
-        entering={FadeIn.springify()}
-        layout={Layout.springify()}
-        style={[styles.card, cardStyle]}
-      >
+      <Animated.View style={[styles.card, animatedStyle]}>  
         <Image source={{ uri: item.img_src }} style={styles.image} />
       </Animated.View>
     </TouchableOpacity>
@@ -78,90 +73,54 @@ const AnimatedCard = memo(({ item, index, scrollY }: AnimatedCardProps) => {
 AnimatedCard.displayName = "AnimatedCard";
 
 export default function MarsGalleryScreen() {
-  const { data, loading, error, hasMore, loadMore } =
-    useMarsRoverViewModel();
+  const { data, loading, error, hasMore, loadMore } = useMarsRoverViewModel();
   const mode = useSelector((s: RootState) => s.theme.mode);
   const isLight = mode === "light";
 
-  // Fondo animado al cambiar tema
-  const bgProgress = useSharedValue(isLight ? 1 : 0);
+  const progress = useSharedValue(isLight ? 1 : 0);
   useEffect(() => {
-    bgProgress.value = withTiming(isLight ? 1 : 0, { duration: 500 });
+    progress.value = withTiming(isLight ? 1 : 0, { duration: 500 });
   }, [isLight]);
   const bgStyle = useAnimatedStyle(() => ({
     flex: 1,
     backgroundColor: interpolateColor(
-      bgProgress.value,
+      progress.value,
       [0, 1],
       ["#222222", "#FFFFFF"]
     ),
   }));
 
-  // Scroll handler para parallax
   const scrollY = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler({
-    onScroll: (e) => {
-      scrollY.value = e.contentOffset.y;
-    },
+    onScroll: (e) => { scrollY.value = e.contentOffset.y; },
   });
-
-  const colors = {
-    background: isLight ? "#FFFFFF" : "#222222",
-    text: isLight ? "#000000" : "#FFFFFF",
-  };
-
-  // Callback memoizado para renderizar cada tarjeta
-  const renderCard = useCallback(
-    ({ item, index }: { item: { id: number; img_src: string }; index: number }) => (
-      <AnimatedCard item={item} index={index} scrollY={scrollY} />
-    ),
-    [scrollY]
-  );
-
-  if (loading && data.length === 0) {
-    return (
-      <View style={[styles.center, { backgroundColor: colors.background }]}>
-        <ActivityIndicator size="large" color={colors.text} />
-      </View>
-    );
-  }
-  if (error && data.length === 0) {
-    return (
-      <View style={[styles.center, { backgroundColor: colors.background }]}>
-        <Text style={[styles.errorText, { color: colors.text }]}>{error}</Text>
-      </View>
-    );
-  }
 
   return (
     <Animated.View style={bgStyle}>
-      <Animated.FlatList
+      <AnimatedFlatList
         data={data}
         keyExtractor={(item) => item.id.toString()}
         numColumns={NUM_COLUMNS}
         contentContainerStyle={styles.listContent}
         onScroll={onScroll}
         scrollEventThrottle={16}
-        renderItem={renderCard}
-
-        // Props de virtualización para mejor rendimiento
-        initialNumToRender={8}
-        maxToRenderPerBatch={8}
-        windowSize={5}
-        removeClippedSubviews={true}
-
-        // getItemLayout para evitar mediciones
+        renderItem={({ item, index }: { item: Photo; index: number }) => (
+          <AnimatedCard item={item} index={index} scrollY={scrollY} />
+        )}
+        initialNumToRender={4}
+        maxToRenderPerBatch={4}
+        windowSize={3}
+        removeClippedSubviews
         getItemLayout={(_, index) => ({
-          length: CARD_SIZE + MARGIN,
-          offset: (CARD_SIZE + MARGIN) * index,
+          length: width / NUM_COLUMNS,
+          offset: (width / NUM_COLUMNS + MARGIN) * index,
           index,
         })}
-
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
           hasMore ? (
-            <ActivityIndicator style={styles.footer} color={colors.text} />
+            <ActivityIndicator style={styles.footer} color={isLight ? "#000" : "#fff"} />
           ) : null
         }
       />
@@ -170,33 +129,16 @@ export default function MarsGalleryScreen() {
 }
 
 const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorText: {
-    fontSize: 16,
-  },
-  listContent: {
-    padding: MARGIN / 2,
-  },
-  card: {
-    width: CARD_SIZE,
-    height: CARD_SIZE,
-    borderRadius: 8,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 4,
-  },
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  listContent: { padding: MARGIN / 2, alignItems: "center" },
+  row: { justifyContent: "space-between", marginBottom: MARGIN / 2 },
+  cardWrapper: { margin: MARGIN / 2, borderRadius: 8, overflow: "hidden" },
+  card: { flex: 1 },
   image: {
-    width: "100%",
-    height: "100%",
+    flex: 1,
+    width: undefined,
+    height: undefined,
+    resizeMode: "stretch",
   },
-  footer: {
-    marginVertical: 16,
-  },
+  footer: { marginVertical: 16 },
 });

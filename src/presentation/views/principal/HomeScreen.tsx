@@ -1,12 +1,11 @@
 // src/presentation/screens/IntroScreen.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Pressable,
   Dimensions,
-  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -16,56 +15,27 @@ import Animated, {
   withTiming,
   Easing,
   withSpring,
+  runOnJS,
 } from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "../../../app/store/store";
 
-// Tus thunks:
-import { GetTheAPOD }       from "../../../app/slices/APODSlice";
-import { GetEPICTheme }     from "../../../app/slices/EPICSlice";
-import { fetchMarsRoverPhotos } from "../../../app/slices/MarsRoverPhotosSlice";
-import { fetchNasaImages }     from "../../../app/slices/NasaImageSlice";
-import { fetchAsteroids }      from "../../../app/slices/AsteroidSlice";
-
+// Parám para navegación tras intro
 type RootStackParamList = {
   Intro: undefined;
-  Home:  undefined;
+  Home: undefined;
 };
 
-const { width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 export default function IntroScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList, "Intro">>();
-  const dispatch = useDispatch<AppDispatch>();
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string| null>(null);
-
-  // 1) Al montarse, disparo prefetch de todas las thunks
-  useEffect(() => {
-    (async () => {
-      try {
-        await Promise.all([
-          dispatch(GetTheAPOD()).unwrap(),
-          dispatch(GetEPICTheme()).unwrap(),
-          dispatch(fetchMarsRoverPhotos()).unwrap(),
-          dispatch(fetchNasaImages({ query: "nasa" })).unwrap(),
-          dispatch(fetchAsteroids()).unwrap(),
-        ]);
-      } catch (err: any) {
-        setError(typeof err === "string" ? err : err.message);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [dispatch]);
-
-  // 2) Animación del cohete
+  // Shared value para movimiento flotante
   const float = useSharedValue(0);
   useEffect(() => {
+    // movimiento suave de vaivén
     float.value = withRepeat(
       withTiming(-20, {
         duration: 2000,
@@ -79,16 +49,34 @@ export default function IntroScreen() {
     transform: [{ translateY: float.value }],
   }));
 
-  // 3) Animación del botón
-  const scale = useSharedValue(1);
-  const scaleStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+  // Shared value para lanzamiento
+  const launch = useSharedValue(0);
+  const launchStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: launch.value }],
   }));
+
+  // Maneja el press: escala y lanza el cohete
+  const handleBegin = () => {
+    // dispara efecto de botón
+    const scale = withSpring(0.9);
+    // lanzamos flotación breve
+    float.value = withSpring(0); // detiene vaivén
+    // animamos lanzamiento hasta fuera de pantalla
+    launch.value = withTiming(
+      -height,
+      { duration: 600, easing: Easing.in(Easing.quad) },
+      (finished) => {
+        if (finished) {
+          runOnJS(navigation.replace)("Home");
+        }
+      }
+    );
+  };
 
   return (
     <View style={styles.container}>
-      {/* Rocket flotante */}
-      <Animated.View style={[styles.rocketContainer, floatStyle]}>
+      {/* Rocket flotante y lanzamiento */}
+      <Animated.View style={[styles.rocketContainer, floatStyle, launchStyle]}>  
         <Ionicons name="rocket" size={64} color="#ff3b30" />
       </Animated.View>
 
@@ -114,102 +102,65 @@ export default function IntroScreen() {
         ‣ Take a <Text style={styles.bold}>TRIP TO SPACE!</Text>{"\n"}
         ‣ Get a <Text style={styles.bold}>TELESCOPE</Text> for <Text style={styles.bold}>FREE!</Text>
       </Text>
+      <Text style={styles.paragraph}>
+        • You can also change the color theme in the side menu!{" "}
+      </Text>
       <Text style={styles.heading}>
         Remember to STAY ONLINE to use this explorer!
       </Text>
 
-      {/* Si hay error de precarga */}
-      {error && (
-        <Text style={styles.errorText}>
-          ⚠️ {error}
-        </Text>
-      )}
-
-      {/* Spinner mientras carga */}
-      {loading && (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#66FCF1" />
-          <Text style={styles.loadingText}>Loading data…</Text>
-        </View>
-      )}
-
-      {/* Botón Begin! sólo aparece tras cargar */}
-      {!loading && !error && (
-        <Pressable
-          onPress={() => {
-            scale.value = withSpring(0.9);
-            setTimeout(() => {
-              scale.value = withSpring(1);
-              navigation.replace("Home");
-            }, 100);
-          }}
-          style={styles.buttonWrapper}
-        >
-          <Animated.View style={[styles.button, scaleStyle]}>
-            <Text style={styles.buttonText}>Begin!</Text>
-          </Animated.View>
-        </Pressable>
-      )}
+      {/* Botón Begin! siempre visible ahora */}
+      <Pressable onPress={handleBegin} style={styles.buttonWrapper}>
+        <Animated.View style={[styles.button]}>
+          <Text style={styles.buttonText}>Begin!</Text>
+        </Animated.View>
+      </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex:            1,
+    flex: 1,
     backgroundColor: "#0B0C10",
-    padding:         24,
-    justifyContent:  "center",
+    padding: 24,
+    justifyContent: "center",
   },
   rocketContainer: {
-    alignSelf:   "center",
+    alignSelf: "center",
     marginBottom: 24,
   },
   heading: {
-    fontSize:     28,
-    fontWeight:   "bold",
-    color:        "#66FCF1",
-    textAlign:    "center",
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#66FCF1",
+    textAlign: "center",
     marginBottom: 16,
   },
   paragraph: {
-    fontSize:     16,
-    color:        "#C5C6C7",
+    fontSize: 16,
+    color: "#C5C6C7",
     marginBottom: 12,
-    lineHeight:   22,
+    lineHeight: 22,
   },
   bold: {
-    color:      "#FFFFFF",
+    color: "#FFFFFF",
     fontWeight: "600",
   },
-  loadingContainer: {
-    marginTop: 24,
-    alignItems: "center",
-  },
-  loadingText: {
-    marginTop: 8,
-    color:     "#66FCF1",
-  },
-  errorText: {
-    marginTop:   16,
-    color:       "tomato",
-    textAlign:   "center",
-    fontSize:    14,
-  },
   buttonWrapper: {
-    marginTop:   32,
-    alignItems:  "center",
+    marginTop: 32,
+    alignItems: "center",
   },
   button: {
     backgroundColor: "#45A29E",
     paddingVertical: 14,
     paddingHorizontal: 48,
-    borderRadius:    32,
-    elevation:       4,
+    borderRadius: 32,
+    elevation: 4,
   },
   buttonText: {
-    color:      "#0B0C10",
-    fontSize:   18,
+    color: "#0B0C10",
+    fontSize: 18,
     fontWeight: "bold",
   },
 });

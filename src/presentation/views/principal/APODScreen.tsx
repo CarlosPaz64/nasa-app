@@ -20,6 +20,7 @@ import Animated, {
   withTiming,
   interpolateColor
 } from 'react-native-reanimated';
+import { useFocusEffect } from "@react-navigation/native";
 
 // Definición de los parámetros para la vista modal con la fotografía en HD
 type RootStackParamList = {
@@ -49,17 +50,27 @@ function formatDateEnglish(isoDate: string): string {
 }
 
 export default function ApodScreen() {
+  const opacity = useSharedValue(0);
+  useFocusEffect(
+    React.useCallback(() => {
+      opacity.value = withTiming(1, { duration: 400 });
+      return () => {
+        opacity.value = 0;
+      };
+    }, [])
+  );
+  const fadeStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { data, loading, error, refetch } = UseApodViewModel();
   const mode = useSelector((s: RootState) => s.theme.mode);
-  // Esta es una validación para conocer el color actual
   const isLight = mode === "light";
-
   const progress = useSharedValue(isLight ? 1 : 0);
   useEffect(() => {
     progress.value = withTiming(isLight ? 1 : 0, { duration: 500 });
   }, [isLight]);
-
   const bgStyle = useAnimatedStyle(() => ({
     flex: 1,
     backgroundColor: interpolateColor(
@@ -117,35 +128,32 @@ export default function ApodScreen() {
   const englishDate = formatDateEnglish(data.date);
 
   return (
-    <Animated.ScrollView style={bgStyle}>
-      <ScrollView
-        contentContainerStyle={[
-          styles.container,
-          // quitamos aquí el backgroundColor fijo
-        ]}
-      >
-        <Text style={[styles.date, { color: colors.text }]}>
-          {englishDate}
-        </Text>
-        <Text style={[styles.title, { color: colors.text }]}>
-          {data.title}
-        </Text>
-        <Image source={{ uri: data.url }} style={styles.image} />
-        <Text style={[styles.explanation, { color: colors.text }]}>
-          {data.explanation}
-        </Text>
-        {data.hdurl && (
-          <Button
-            title="See photo in high definition"
-            color={isLight ? undefined : "gray"}
-            onPress={() =>
-              navigation.navigate("HDPhotoModal", { uri: data.hdurl })
-            }
-          />
-        )}
-      </ScrollView>
+    // Combina bgStyle y fadeStyle en un único Animated.ScrollView
+    <Animated.ScrollView
+      style={[bgStyle, fadeStyle]}
+      contentContainerStyle={styles.container}
+    >
+      <Text style={[styles.date,        { color: colors.text }]}>
+        {englishDate}
+      </Text>
+      <Text style={[styles.title,       { color: colors.text }]}>
+        {data.title}
+      </Text>
+      <Image source={{ uri: data.url }} style={styles.image} />
+      <Text style={[styles.explanation, { color: colors.text }]}>
+        {data.explanation}
+      </Text>
+      {data.hdurl && (
+        <Button
+          title="See photo in high definition"
+          color={isLight ? undefined : "gray"}
+          onPress={() =>
+            navigation.navigate("HDPhotoModal", { uri: data.hdurl })
+          }
+        />
+      )}
     </Animated.ScrollView>
-  );
+  );  
 }
 
 const styles = StyleSheet.create({
