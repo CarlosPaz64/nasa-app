@@ -7,8 +7,26 @@ import MediaModal from "../../presentation/views/modals/MediaModal";
 import EpicDetailModal from "../../presentation/views/modals/EpicDetail";
 import MarsHDPhoto from "../../presentation/views/modals/MarsHDPhoto";
 import AsteroidDetailModal from "../../presentation/views/modals/AsteroidDetailModal";
+import ContestFormScreen from "../../presentation/views/modals/ContestForm";
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  // pantallas principales
+  Intro: undefined;
+  Home: undefined;
+
+  // modales de APOD, Media, Epic, Marte, Asteroides…
+  HDPhotoModal: { uri: string };
+  MediaModal: { mediaId: string };             // ajusta según tus params
+  EpicDetailModal: { epicId: string };
+  MarsHDPhoto: { uri: string };
+  AsteroidDetailModal: { asteroidId: string };
+ 
+  // pantallas de concursos
+  ConcursosList: undefined;
+  ContestForm: { contestId: string };
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootStackNavigation() {
   return (
@@ -80,6 +98,15 @@ export default function RootStackNavigation() {
           animation: 'slide_from_left'
         }}
       />
+
+      {/* Grupo de modales */}
+        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+          <Stack.Screen
+            name="ContestForm"
+            component={ContestFormScreen}
+            options={{ title: 'Formulario de Concurso', headerShown: false, animation: 'slide_from_bottom'}}
+          />
+        </Stack.Group>
     </Stack.Navigator>
   );
 }
