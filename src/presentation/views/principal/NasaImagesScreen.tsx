@@ -1,4 +1,3 @@
-// presentation/screens/NasaMediaScreen.tsx
 import React, { useEffect } from "react";
 import {
   View, Text, TextInput, Button,

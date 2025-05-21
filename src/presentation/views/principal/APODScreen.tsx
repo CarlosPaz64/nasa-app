@@ -1,4 +1,3 @@
-// src/presentation/screens/ApodScreen.tsx
 import React, { useEffect } from "react";
 import {
   View,

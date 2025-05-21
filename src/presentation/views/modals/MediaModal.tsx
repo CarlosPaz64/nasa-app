@@ -1,4 +1,3 @@
-// presentation/screens/MediaModal.tsx
 import React from "react";
 import { View, Image, StyleSheet, TouchableOpacity, Text, Dimensions } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";

@@ -1,4 +1,3 @@
-// src/presentation/screens/IntroScreen.tsx
 import React, { useEffect } from "react";
 import {
   View,

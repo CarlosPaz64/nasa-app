@@ -1,4 +1,3 @@
-// src/presentation/screens/ContestsScreen.tsx
 import React, { useEffect } from "react";
 import {
   Pressable,
@@ -24,8 +23,9 @@ import type { RootState } from "../../../app/store/store";
 // Tipo de íconos válidos
 type IoniconsName = keyof typeof Ionicons.glyphMap;
 
-// Definición de un concurso
+// Modelo de datos para cada “concurso” que se mostrará en la pantalla
 type Contest = { id: string; label: string; icon: IoniconsName };
+// Array de concursos con id, etiqueta y nombre de icono
 const contests: Contest[] = [
   { id: "Visit NASA", label: "Visit NASA", icon: "planet-outline" },
   { id: "Moon rocks", label: "Moon rocks", icon: "moon-outline" },
@@ -33,6 +33,7 @@ const contests: Contest[] = [
   { id: "Get a telescope", label: "Get a telescope", icon: "telescope-outline" },
 ];
 
+// Define los parámetros de rutas para este stack de concursos
 type ContestsParamList = {
   ConcursosList: undefined;
   ContestForm: { contestId: string };
@@ -45,6 +46,7 @@ const LIGHT_BG = "#FFFFFF";
 const DARK_BG = "#222222";
 
 export default function ContestsScreen() {
+  // Obtenemos la navegación tipada para este stack
   const navigation =
     useNavigation<NativeStackNavigationProp<ContestsParamList>>();
   const mode = useSelector((st: RootState) => st.theme.mode);
@@ -79,7 +81,7 @@ export default function ContestsScreen() {
           Choose one below to visit NASA facilities,{'\n'}
           win moon rocks, travel to space, or get a telescope.
         </Animated.Text>
-        {/* Grid de 2x2 */}
+        {/* Grid de dos columnas para mostrar los concursos */}
         <View style={styles.grid}>
           {contests.map(({ id, label, icon }) => (
             <Pressable

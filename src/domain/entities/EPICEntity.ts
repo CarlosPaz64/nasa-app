@@ -4,7 +4,7 @@ export interface EPICEntity {
     caption: string;
     image: string;
     version: string;
-    date: string; // Este valor es la clave para poder cambiar dinámicamente el tema de la aplicación
+    date: string;
     centroid_coordinates: {
       lat: number;
       lon: number;

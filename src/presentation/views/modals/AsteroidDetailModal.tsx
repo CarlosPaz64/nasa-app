@@ -1,4 +1,3 @@
-// src/presentation/screens/AsteroidDetailModal.tsx
 import React from "react";
 import {
   View,
@@ -11,6 +10,7 @@ import {
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+// Componente para reproducir animaciones Lottie en React Native  
 import LottieView from "lottie-react-native";
 import meteorAnim from "../../../../assets/animations/detail_meteor.json";
 import type { AsteroidEntity } from "../../../domain/entities/AsteroidEntity";
@@ -21,9 +21,13 @@ type RouteParams = {
 
 export default function AsteroidDetailModal() {
   const { params } = useRoute();
+  // Obtenemos los parámetros de la ruta actual
   const { asteroid } = params as RouteParams;
+  // Hacemos un cast de params para extraer el objeto asteroid
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  // Obtenemos el objeto navigation para controlar la navegación (goBack, etc.)
 
+  // Propiedades a mostrar
   const {
     name,
     close_approach_date,

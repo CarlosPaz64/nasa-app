@@ -1,4 +1,3 @@
-// src/presentation/views/principal/MarsPhotoModal.tsx
 import React from "react";
 import {
   View,

@@ -1,8 +1,10 @@
 // Este es un stack para la vista de los concursos con formularios
 import React from "react";
+// Aquí se llama al creador de los stacks
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ContestsScreen from "../../presentation/views/contests/ContestsScreen";
 
+// Instancia para el stack
 const Stack = createNativeStackNavigator();
 
 export default function ContestsStack () {

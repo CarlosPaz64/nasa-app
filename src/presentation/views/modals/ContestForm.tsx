@@ -1,4 +1,3 @@
-// src/presentation/screens/ContestFormScreen.tsx
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -31,7 +30,7 @@ type FormValues = {
   name: string;
   phone: string;
   email: string;
-  dob: string;           // YYYY-MM-DD
+  dob: string;
   country: string;
   acceptTerms: boolean;
 };

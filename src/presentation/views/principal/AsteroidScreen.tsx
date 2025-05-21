@@ -1,4 +1,3 @@
-// src/presentation/screens/AsteroidListScreen.tsx
 import React from "react";
 import {
   View,
@@ -8,7 +7,7 @@ import {
   ActivityIndicator,
   Dimensions,
   Platform,
-  TouchableOpacity,              // <-- importar
+  TouchableOpacity,
 } from "react-native";
 import { useSelector } from "react-redux";
 import Animated, {

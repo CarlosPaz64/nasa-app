@@ -1,5 +1,4 @@
-// src/presentation/screens/MarsGalleryScreen.tsx
-import React, { useEffect, memo, useCallback } from "react";
+import React, { useEffect, memo } from "react";
 import {
   View,
   Text,

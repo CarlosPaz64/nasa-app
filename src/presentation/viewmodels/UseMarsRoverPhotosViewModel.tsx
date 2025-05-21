@@ -1,4 +1,3 @@
-// src/presentation/viewmodels/useMarsRoverViewModel.ts
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMarsRoverPhotos } from "../../app/slices/MarsRoverPhotosSlice";

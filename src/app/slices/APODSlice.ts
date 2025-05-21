@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import NetInfo from "@react-native-community/netinfo"; // Básicamente esto me va a ayudar para saber el tipo de conexión y la calidad de la misma
 // Esta es la documentación: https://www.npmjs.com/package/@react-native-community/netinfo
+// import NetInfo from "@react-native-community/netinfo";
 import { APODContractImplementation } from "../../data/repositories/APODRepoImpl";
 import { NasaEntity } from "../../domain/entities/NasaEntity";
 // Este es para el manejo de los errores durante el fetch
@@ -55,17 +56,17 @@ export const APODSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
       builder
-        // 4) Pendiente → marca loading
+        // Pendiente → marca loading
         .addCase(GetTheAPOD.pending, (state) => {
           state.loading = true;
           state.error = null;
         })
-        // 5) Cumplido → guarda data y quita loading
+        // Cumplido → guarda data y quita loading
         .addCase(GetTheAPOD.fulfilled, (state, action) => {
           state.loading = false;
           state.data = action.payload.data;
         })
-        // 6) Rechazado → guarda error y quita loading
+        // Rechazado → guarda error y quita loading
         .addCase(GetTheAPOD.rejected, (state, action) => {
           state.loading = false;
           state.error = action.payload as string;

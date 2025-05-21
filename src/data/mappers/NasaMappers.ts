@@ -4,7 +4,7 @@ import { AsteroidEntity } from "../../domain/entities/AsteroidEntity";
 import { EPICEntity } from "../../domain/entities/EPICEntity";
 import { MarsRoverPhotosEntity } from "../../domain/entities/MarsRoverPhotosEntity";
 import { NasaImageEntity } from "../../domain/entities/NasaImageEntity";
-
+/* PARA TODOS LOS MAPPINGS SE DEBE PONER EL PARÁMETRO RAW: ANY */
 // Mapping de los datos del APOD a la entidad correspondiente
 export const APODMap = (raw: any): APODEntity => ({
     // Raw son los valores crudos del fetch y any es que puede ser cualquier cosa
@@ -84,21 +84,31 @@ export const MarsRoverMap = (raw: any): MarsRoverPhotosEntity[] => {
     }))
 }
 
-// Mapping de los datos de la API de las imágenes de la NASA a la entidad correspondiente
+// Función que transforma la respuesta cruda de la API de NASA en un array de NasaImageEntity
 export const NasaImageMap = (raw: any): NasaImageEntity[] => {
-    return raw.collection.items.map((item: any) => {
-      const data = item.data[0] as Omit<NasaImageEntity, "preview">;
-      const links = item.links as NasaImageEntity["links"];
-  
-      const preview =
-        links.find(l => l.rel === "preview" && l.render === "image")?.href
-        ?? links[0]?.href
-        ?? "";
-  
-      return {
-        ...data,
-        links,
-        preview
-      };
-    });
-  };
+  // Se devuelve el resultado de mapear cada elemento del array raw.collection.items
+  return raw.collection.items.map((item: any) => {
+    // Se extrae el objeto de datos principal (sin la propiedad "preview") de la API
+    const data = item.data[0] as Omit<NasaImageEntity, "preview">;
+    // Tomamos la lista de enlaces asociados a esta imagen
+    const links = item.links as NasaImageEntity["links"];
+
+    // Buscamos dentro de esos enlaces uno con rel="preview" y render="image"
+    // Si lo encontramos, usamos su href; si no, tomamos el href del primer enlace;
+    // y si tampoco existe, usamos cadena vacía.
+    const preview =
+      links.find(l => l.rel === "preview" && l.render === "image")?.href // Intenta hallar enlace de vista previa
+      ?? links[0]?.href // Si falla, usa el primer enlace disponible
+      ?? ""; // Si no hay enlaces, fallback a cadena vacía
+
+    // Construimos y devolvemos el objeto final conforme a NasaImageEntity:
+    // - Desplegamos todas las propiedades de data
+    // - Adjuntamos la lista completa de links
+    // - Añadimos la URL calculada en preview
+    return {
+      ...data,    // Propiedades originales de la entidad (excepto preview)
+      links,      // Array de enlaces tal cual vino de la API
+      preview     // URL de previsualización calculada
+    };
+  });
+};

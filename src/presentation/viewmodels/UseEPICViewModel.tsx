@@ -1,9 +1,8 @@
-// src/presentation/viewmodels/useEpicViewModel.ts
-import { useEffect }                from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { GetEPICTheme }             from "../../app/slices/EPICSlice";
+import { GetEPICTheme } from "../../app/slices/EPICSlice";
 import type { RootState, AppDispatch } from "../../app/store/store";
-import type { EPICEntity }          from "../../domain/entities/EPICEntity";
+import type { EPICEntity } from "../../domain/entities/EPICEntity";
 
 /**
  * useEpicViewModel
@@ -15,9 +14,9 @@ export function useEpicViewModel() {
   const dispatch = useDispatch<AppDispatch>();
 
   // 1) Estado EPIC desde Redux
-  const epics   = useSelector((s: RootState) => s.EPIC.data ?? []);
+  const epics = useSelector((s: RootState) => s.EPIC.data ?? []);
   const loading = useSelector((s: RootState) => s.EPIC.loading);
-  const error   = useSelector((s: RootState) => s.EPIC.error);
+  const error = useSelector((s: RootState) => s.EPIC.error);
 
   // 2) Al montar el hook, lanzamos la petición EPIC
   useEffect(() => {

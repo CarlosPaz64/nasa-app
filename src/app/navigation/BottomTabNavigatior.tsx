@@ -1,15 +1,24 @@
 import React from "react";
+// Hook de Redux para obtener estado global
+// react-redux
 import { useSelector } from "react-redux";
+// Importación para crear la navegación por debajo
+// @react-navigation/bottom-tabs
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// Librería de íconos
 import { Ionicons } from "@expo/vector-icons";
+// Tipo del estado raíz de mi store 
+// export type RootState = ReturnType<typeof rootReducer>
 import type { RootState } from "../store/store";
 
+// Las vistas
 import ApodScreen from "../../presentation/views/principal/APODScreen";
 import EpicScreen from "../../presentation/views/principal/EPICScreen";
 import MarsGalleryScreen from "../../presentation/views/principal/MarsRoverPhotosScreen";
 import NasaMediaScreen from "../../presentation/views/principal/NasaImagesScreen";
 import AsteroidListScreen from "../../presentation/views/principal/AsteroidScreen";
 
+// Animaciones de react-native-reanimated para transiciones de pantalla
 import Animated, {  FadeIn,
   FadeOut,
   SlideInDown,
@@ -21,13 +30,18 @@ import Animated, {  FadeIn,
   SlideInLeft,
   SlideOutLeft, } from "react-native-reanimated";
 
+// instancia del bottomTabNavigator
 const Tab = createBottomTabNavigator();
 
 // Extraemos el tipo correcto para los nombres de ícono
 type IoniconName = React.ComponentProps<typeof Ionicons>["name"];
 
 export default function BottomTabNavigator() {
+  // Se crean las variables para el cambio de color
+  // const mode = useSelector((s: RootState) => s.theme.mode);
   const mode = useSelector((s: RootState) => s.theme.mode);
+  // Constante validador del tema claro
+  // const isLight = mode === "light";
   const isLight = mode === "light";
 
   return (
@@ -76,6 +90,7 @@ export default function BottomTabNavigator() {
         };
       }}
     >
+      {/* Pantalla APOD con animaciones de entrada y salida */}
       <Tab.Screen name="APOD" options={{ headerShown: false }}>
         {() => (
           <Animated.View
@@ -88,6 +103,7 @@ export default function BottomTabNavigator() {
         )}
       </Tab.Screen>
 
+      {/* Pantalla EPIC con deslizamiento vertical */}
       <Tab.Screen name="EPIC" options={{ headerShown: false }}>
         {() => (
           <Animated.View
@@ -100,6 +116,7 @@ export default function BottomTabNavigator() {
         )}
       </Tab.Screen>
 
+      {/* Pantalla Mars con zoom */}
       <Tab.Screen name="Mars">
         {() => (
           <Animated.View
@@ -112,6 +129,7 @@ export default function BottomTabNavigator() {
         )}
       </Tab.Screen>
 
+      {/* Pantalla Nasa images con rebote */}
       <Tab.Screen name="Nasa images">
         {() => (
           <Animated.View
@@ -124,6 +142,7 @@ export default function BottomTabNavigator() {
         )}
       </Tab.Screen>
 
+      {/* Pantalla Asteroids con deslizamiento horizontal */}
       <Tab.Screen name="Asteroids">
         {() => (
           <Animated.View

@@ -1,4 +1,3 @@
-// src/presentation/views/principal/EpicDetailModal.tsx
 import React from "react";
 import {
   View, Text, Image, StyleSheet, ScrollView, Dimensions, TouchableOpacity

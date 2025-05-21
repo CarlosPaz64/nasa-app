@@ -5,7 +5,7 @@ import { EPICContract } from "../contracts/EPICContract";
 export class EPICUseCase {
     constructor(private repository: EPICContract){}
 
-    async execute(): Promise<EPICEntity> {
+    async execute(): Promise<EPICEntity[]> {
         return this.repository.getEPICData();
     }
 }
