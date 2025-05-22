@@ -2,6 +2,7 @@
 ## Materia: Certificación de software
 
 **Explicación:** Esta es una aplicación realizada en **React Native + Expo + TypeScript**, que respeta y se guía bajo la arquitectura **MVVM + Clean Architecture.** Consiste en un "explorador de la NASA", que consume 5 APIs públicas de la NASA, además de contener 4 concursos falsos. Puedes explorar libremente cada una de ellas instalando la aplicación y ejecutándola ya sea en Web o mediante un emulador de Android (puedes compilarlo también directamente desde tu teléfono móvil).
+> **NOTA:** En la carpeta de requisitos, se encuentra el enlace al video explicativo de la aplicación.
 
 **Pasos para instalar:** Únicamente escribe en tu terminal del proyecto el comando ```npm install``` y se instalan todas las dependencias. Una vez hayas instalado todo, escribe ```npx expo start``` y selecciona la opción según te convenga.
 
