@@ -47,6 +47,10 @@
   },
 ```
 
+### Mapa de la arquitectura de la aplicación:
+![Mapa de la arquitectura de la aplicación](https://github.com/user-attachments/assets/cb835095-3376-4451-b8fc-a8ded1a7beea)
+
+
 **Explicación de cada capa:**
 ## Presentation
 Se encarga de todo lo visible al usuario: pantallas (Views), componentes UI reutilizables y la lógica de enlace (ViewModels) que recibe eventos de la UI y expone datos listos para mostrar.
